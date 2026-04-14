@@ -1,4 +1,4 @@
-# KI-Web-App zur Erkennung von Kleidungsstuecken
+# KI-Web-App zur Erkennung von Kleidungsstücken
 
 Dieses Repository enthaelt ein Schulprojekt-Grundgeruest fuer eine spaetere Kleidungserkennung mit YOLOv8.
 Aktuell laeuft die App im `mock`-Modus mit einer simulierten Vorhersage inklusive Bounding Box.
