@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 import streamlit as st
-from PIL import Image
+from PIL import Image, ImageOps, UnidentifiedImageError
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
@@ -32,7 +32,16 @@ def main() -> None:
         st.info("Bitte ein Bild auswählen.")
         return
 
-    image = Image.open(uploaded_file).convert("RGB")
+    try:
+        uploaded_file.seek(0)
+        image = Image.open(uploaded_file)
+        image = ImageOps.exif_transpose(image).convert("RGB")
+    except UnidentifiedImageError:
+        st.error("Dateiformat nicht lesbar (bitte JPG oder PNG verwenden).")
+        return
+    except OSError as error:
+        st.error(f"Bild konnte nicht geöffnet werden: {error}")
+        return
     predictions = pipeline.predict(image)
     result_image = draw_predictions(image, predictions)
 
