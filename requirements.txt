@@ -1,3 +1,6 @@
 streamlit>=1.35,<2.0
 Pillow>=10.0,<12.0
 pytest>=8.0,<9.0
+ultralytics>=8.3,<9.0
+# Required for live webcam/video demo.
+opencv-python>=4.13.0.92

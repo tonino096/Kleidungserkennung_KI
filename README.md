@@ -1,36 +1,27 @@
 # KI-Web-App zur Erkennung von Kleidungsstücken
 
-Dieses Repository enthaelt ein Schulprojekt-Grundgeruest fuer eine spaetere Kleidungserkennung mit YOLOv8.
-Aktuell laeuft die App im `mock`-Modus mit einer simulierten Vorhersage inklusive Bounding Box.
+Dieses Repository ist bewusst kompakt gehalten: eine Streamlit-App, eine OpenCV-Live-Demo und vier zentrale `src`-Dateien fuer YOLO-Inferenz, DeepFashion2-Konvertierung, Matchtests und Visualisierung.
 
 ## Features
 
-- Streamlit-Weboberflaeche zum Hochladen von Bildern
-- Inferenz-Pipeline mit austauschbarem Detector (`mock` oder `yolo`)
-- Visualisierung von Vorhersagen direkt im Bild
-- Erste Tests fuer den Mock-Detector
-- SQLite-Datenbank fuer Trainingsbilder und Detection-Annotationen
-- DeepFashion2-Importer fuer die offiziellen `train/annos` und `validation/annos`
+- Streamlit-Weboberfläche für Einzelbildtests
+- Live-Webcam- oder Video-Demo im OpenCV-Fenster
+- YOLO- oder Mock-Inferenz über dieselbe Pipeline
+- DeepFashion2 -> YOLO Label-Konvertierung ohne Bildkopien
+- Einzel- und Batch-Matchtests mit Report-Bild und HTML-Uebersicht
 
 ## Projektstruktur
 
 ```text
-app/streamlit_app.py          Streamlit UI
-src/config/settings.py        Konfiguration ueber Umgebungsvariablen
-src/detector/base.py          Detector-Interface + Prediction-Typ
-src/detector/mock_detector.py Mock-Inferenz
-src/detector/yolo_detector.py YOLO-Platzhalter
-src/inference/pipeline.py     Detector-Auswahl und Inferenz-Pipeline
-src/training/database.py      SQLite-Schema fuer Bilder, Labels und Bounding Boxes
-src/training/deepfashion2_importer.py Import von DeepFashion2-JSON nach SQLite
-src/visualization/draw.py     Bounding-Box-Visualisierung
-tests/test_mock_detector.py   Unit-Test fuer Mock-Detector
-tests/test_deepfashion2_importer.py Import-Test fuer DeepFashion2
+app/streamlit_app.py     Streamlit UI
+app/webcam_demo.py       Live-Demo für Webcam oder Videodatei
+src/core.py              Settings, Detektoren und Inferenz-Pipeline
+src/draw.py              Bounding-Boxes und Report-Visualisierung
+src/deepfashion2_yolo.py DeepFashion2 -> YOLO Labels
+src/matchtest.py         Matchtest- und Batch-Report-Logik
+main.py                  CLI für Konvertierung und Matchtests
+requirements.txt         Python-Abhängigkeiten
 ```
-
-## Voraussetzungen
-
-- Python 3.10+ (empfohlen)
 
 ## Installation
 
@@ -46,70 +37,65 @@ pip install -r requirements.txt
 streamlit run app/streamlit_app.py
 ```
 
-Danach ist die App lokal im Browser verfuegbar (typisch unter `http://localhost:8501`).
-
-## Tests ausfuehren
+## Live-Webcam-Demo
 
 ```bash
-pytest
+set YOLO_WEIGHTS_PATH=models/best.pt
+python app/webcam_demo.py
+```
+
+Optional:
+
+```bash
+python app/webcam_demo.py --source 1
+python app/webcam_demo.py --weights "R:/Schulprojekt KI/Kleidungserkennung_KI/models/best.pt"
+python app/webcam_demo.py --source "video.mp4"
+```
+
+Hinweise:
+
+- `q` oder `Esc` beendet das Fenster.
+- Falls die Standard-Webcam nicht gefunden wird, testet `--source 1` oder `--source 2`.
+
+## DeepFashion2 -> YOLO konvertieren
+
+Schneller Testlauf:
+
+```bash
+python main.py convert-deepfashion2-to-yolo --dataset-root "R:\Schulprojekt KI\DeepFashion2" --output-root data/deepfashion2_yolo_labels --limit-per-split 200
+```
+
+Voller Lauf:
+
+```bash
+python main.py convert-deepfashion2-to-yolo --dataset-root "R:\Schulprojekt KI\DeepFashion2" --output-root data/deepfashion2_yolo_labels
+```
+
+## YOLO trainieren
+
+```python
+from ultralytics import YOLO
+
+model = YOLO("yolo11n.pt")
+model.train(data="data/deepfashion2_yolo_labels/data.yaml", epochs=30, imgsz=640)
+```
+
+## Matchtest
+
+Einzelbild:
+
+```bash
+python main.py matchtest-deepfashion2 --dataset-root "R:\Schulprojekt KI\DeepFashion2" --weights-path "models/best.pt" --split validation --annotation-stem 000001 --output-root outputs/matchtests
+```
+
+Batch:
+
+```bash
+python main.py batch-matchtest-deepfashion2 --dataset-root "R:\Schulprojekt KI\DeepFashion2" --weights-path "models/best.pt" --split validation --limit 12 --output-root outputs/matchtests
 ```
 
 ## Konfiguration
 
-Die App liest folgende Umgebungsvariablen aus:
-
-- `DETECTOR_TYPE` (Standard: `mock`)
-- `YOLO_WEIGHTS_PATH` (Standard: `models/yolov8n-clothes.pt`)
-- `DATABASE_PATH` (Standard: `data/clothing.db`)
-- `DEEPFASHION2_ROOT` (Standard: `data/deepfashion2`)
-
-Beispiel in PowerShell:
-
-```powershell
-$env:DETECTOR_TYPE="mock"
-$env:YOLO_WEIGHTS_PATH="models/yolov8n-clothes.pt"
-streamlit run app/streamlit_app.py
-```
-
-## DeepFashion2 importieren
-
-Erwartete Ordnerstruktur des offiziellen Datensatzes:
-
-```text
-data/deepfashion2/
-├─ train/
-│  ├─ image/
-│  └─ annos/
-└─ validation/
-   ├─ image/
-   └─ annos/
-```
-
-SQLite-Schema anlegen:
-
-```bash
-python main.py init-db
-```
-
-DeepFashion2 in die lokale Datenbank importieren:
-
-```bash
-python main.py import-deepfashion2 --dataset-root data/deepfashion2
-```
-
-Optional mit expliziten Splits:
-
-```bash
-python main.py import-deepfashion2 --dataset-root data/deepfashion2 --splits train validation
-```
-
-Der Import legt die 13 offiziellen DeepFashion2-Kategorien an und speichert pro Bild:
-- Bildpfad, Split, Quelle und `pair_id`
-- Bounding Boxes pro `item`
-- Landmarks und Segmentierungen als JSON-Text
-- DeepFashion2-Metadaten wie `style`, `scale`, `occlusion`, `zoom_in`, `viewpoint`
-
-## Aktueller Stand
-
-- `mock`: funktionsfaehig, erzeugt eine Beispielvorhersage
-- `yolo`: als Platzhalter vorbereitet, Modellinferenz muss noch implementiert werden
+- `DETECTOR_TYPE` Standard: `mock`
+- `YOLO_WEIGHTS_PATH` Standard: `models/best.pt`
+- `DEEPFASHION2_ROOT` Standard: `data/deepfashion2`

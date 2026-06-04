@@ -16,9 +16,13 @@ class InferencePipeline:
         detector: BaseDetector | None = None,
     ) -> None:
         self.settings = settings
+        # Falls von außen bereits ein Detector übergeben wird, nutzt die Pipeline
+        # diesen direkt. Das ist besonders für Tests und Sonderfälle praktisch.
         self.detector = detector or self._build_detector(detector_type or settings.detector_type)
 
     def _build_detector(self, detector_type: str) -> BaseDetector:
+        # Die Pipeline ist bewusst einfach gehalten: ein String entscheidet,
+        # welche konkrete Detector-Implementierung verwendet wird.
         if detector_type == "mock":
             return MockDetector()
         if detector_type == "yolo":
@@ -26,4 +30,6 @@ class InferencePipeline:
         raise ValueError(f"Unbekannter detector_type: {detector_type}")
 
     def predict(self, image: Image) -> list[Prediction]:
+        # Der eigentliche Inferenzaufruf wird komplett an den ausgewählten
+        # Detector delegiert, damit die Pipeline schlank bleibt.
         return self.detector.predict(image)
