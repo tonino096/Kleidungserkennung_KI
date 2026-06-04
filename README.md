@@ -1,6 +1,6 @@
 # KI-Web-App zur Erkennung von Kleidungsstücken
 
-Dieses Repository ist bewusst kompakt gehalten: eine Streamlit-App, eine OpenCV-Live-Demo und vier zentrale `src`-Dateien fuer YOLO-Inferenz, DeepFashion2-Konvertierung, Matchtests und Visualisierung.
+Dieses Repository ist bewusst kompakt gehalten: eine Streamlit-App, eine OpenCV-Live-Demo und vier `src`-Dateien für YOLO-Inferenz, DeepFashion2-Konvertierung, Matchtests und Visualisierung.
 
 ## Features
 
@@ -8,7 +8,7 @@ Dieses Repository ist bewusst kompakt gehalten: eine Streamlit-App, eine OpenCV-
 - Live-Webcam- oder Video-Demo im OpenCV-Fenster
 - YOLO- oder Mock-Inferenz über dieselbe Pipeline
 - DeepFashion2 -> YOLO Label-Konvertierung ohne Bildkopien
-- Einzel- und Batch-Matchtests mit Report-Bild und HTML-Uebersicht
+- Einzel- und Batch-Matchtests mit Report-Bild und HTML-Übersicht
 
 ## Projektstruktur
 
@@ -55,7 +55,7 @@ python app/webcam_demo.py --source "video.mp4"
 Hinweise:
 
 - `q` oder `Esc` beendet das Fenster.
-- Falls die Standard-Webcam nicht gefunden wird, testet `--source 1` oder `--source 2`.
+- Falls die Standard-Webcam nicht gefunden wird, teste `--source 1` oder `--source 2`.
 
 ## DeepFashion2 -> YOLO konvertieren
 
