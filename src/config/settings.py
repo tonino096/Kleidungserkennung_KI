@@ -4,6 +4,9 @@ from dataclasses import dataclass, field
 import os
 from pathlib import Path
 
+# In dieser Datei werden alle Pfade und Standardwerte gesammelt. So muss man
+# nicht in jeder App-Datei neu raten, wo Modelle oder der Datensatz liegen.
+
 # PROJECT_ROOT dient als feste Basis für alle relativen Projektpfade,
 # egal von welchem aktuellen Arbeitsverzeichnis das Projekt gestartet wird.
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -82,8 +85,8 @@ def resolve_default_best_model_path() -> str:
 def build_model_registry() -> dict[str, str]:
     # Die drei Modellpfade können bei Bedarf per Umgebungsvariable überschrieben
     # werden, funktionieren aber auch mit den hier hinterlegten Standardnamen.
-    # Die Schlüssel sind absichtlich schon die später sichtbaren UI-Namen,
-    # damit alle Projektteile dieselben Bezeichnungen wiederverwenden können.
+    # Die Schlüssel sind direkt die später sichtbaren UI-Namen. Dadurch sieht
+    # die Auswahl in Streamlit genauso aus wie die Namen in den Settings.
     return {
         "YOLO v8n 15 Epochen": str(resolve_project_path(os.getenv("YOLO_MODEL_1_PATH", "models/bestv8n_15ep.pt"))),
         "YOLO v11n 15 Epochen": str(resolve_project_path(os.getenv("YOLO_MODEL_2_PATH", "models/bestv11n_15ep.pt"))),

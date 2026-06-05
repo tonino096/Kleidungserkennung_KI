@@ -12,6 +12,9 @@ from src.detector.yolo_detector import YoloDetector
 from src.training.deepfashion2_yolo import DEEPFASHION2_CATEGORIES
 from src.visualization.draw import draw_batch_report, draw_match_comparison, get_category_color
 
+# Diese Datei beantwortet die Frage: "Wie gut trifft das Modell die echten
+# DeepFashion2-Boxen?" Dafür werden Vorhersagen und Ground Truth verglichen.
+
 
 @dataclass
 class MatchRecord:
@@ -181,7 +184,7 @@ class DeepFashion2MatchTester:
         image_stem: str | None = None,
         confidence_threshold: float = 0.25,
     ) -> dict[str, Any]:
-        # Fuer den Test-Split ohne Ground Truth werden nur Vorhersagen
+        # Für den Test-Split ohne Ground Truth werden nur Vorhersagen
         # berechnet, gerendert und als JSON zusammengefasst.
         split_root = self._resolve_image_only_split_root(split)
         image_path = self._resolve_prediction_image_path(split_root / "image", image_stem)
@@ -213,7 +216,7 @@ class DeepFashion2MatchTester:
         confidence_threshold: float = 0.25,
     ) -> dict[str, Any]:
         # Im Test-Split ohne Annotationen entstehen keine Matchmetriken,
-        # sondern nur gerenderte Vorhersagebilder plus JSON-Uebersicht.
+        # sondern nur gerenderte Vorhersagebilder plus JSON-Übersicht.
         split_root = self._resolve_image_only_split_root(split)
         image_paths = sorted(self._iter_image_paths(split_root / "image"))
         if limit > 0:
@@ -321,7 +324,7 @@ class DeepFashion2MatchTester:
         image_output_dir: Path,
     ) -> dict[str, Any]:
         # Diese Variante verarbeitet ein Bild ohne Ground Truth und zeichnet
-        # ausschliesslich die Modellvorhersagen fuer den Test-Split.
+        # ausschließlich die Modellvorhersagen für den Test-Split.
         with Image.open(image_path) as image_file:
             image = image_file.convert("RGB")
             raw_predictions = self.detector.predict(image)
@@ -368,7 +371,7 @@ class DeepFashion2MatchTester:
         )
 
     def _resolve_image_only_split_root(self, split: str) -> Path:
-        # Fuer den Vorhersagemodus reicht ein Bildordner, auch wenn keine
+        # Für den Vorhersagemodus reicht ein Bildordner, auch wenn keine
         # Annotationsdateien vorhanden sind.
         if _is_image_only_split_root(self.dataset_root):
             return self.dataset_root
@@ -414,7 +417,7 @@ class DeepFashion2MatchTester:
 
     @staticmethod
     def _resolve_prediction_image_path(image_dir: Path, image_stem: str | None) -> Path:
-        # Im Test-Split wird direkt per Bildname oder notfalls ueber das erste
+        # Im Test-Split wird direkt per Bildname oder notfalls über das erste
         # vorhandene Bild gearbeitet.
         if image_stem is not None:
             return DeepFashion2MatchTester._resolve_image_path(image_dir, image_stem)
@@ -426,7 +429,7 @@ class DeepFashion2MatchTester:
 
     @staticmethod
     def _iter_image_paths(image_dir: Path) -> list[Path]:
-        # Alle unterstuetzten Bildendungen werden gesammelt, damit Batch- und
+        # Alle unterstützten Bildendungen werden gesammelt, damit Batch- und
         # Einzelmodus dieselbe Dateilogik nutzen.
         image_paths: list[Path] = []
         for suffix in ("*.jpg", "*.jpeg", "*.png"):
@@ -480,6 +483,8 @@ def evaluate_predictions(
             if prediction["label"] != target["label"]:
                 continue
 
+            # Die IoU sagt, wie stark echte Box und Vorhersage überlappen.
+            # Nur die beste Vorhersage darf am Ende als Treffer zählen.
             iou = calculate_iou(target["bbox"], prediction["bbox"])
             if iou > best_iou:
                 best_iou = iou
@@ -719,6 +724,7 @@ def calculate_iou(first_box: list[int], second_box: list[int]) -> float:
     intersection_height = max(0, intersection_y2 - intersection_y1)
     intersection_area = intersection_width * intersection_height
     if intersection_area == 0:
+        # Ohne Überschneidung gibt es auch keinen Treffer.
         return 0.0
 
     first_area = max(0, first_x2 - first_x1) * max(0, first_y2 - first_y1)

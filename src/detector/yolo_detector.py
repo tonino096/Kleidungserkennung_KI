@@ -9,6 +9,9 @@ from PIL.Image import Image
 from src.config.settings import resolve_project_path
 from src.detector.base import BaseDetector, Prediction
 
+# Diese Klasse ist die echte KI-Anbindung: Sie lädt ein YOLO-Modell und
+# übersetzt dessen Ausgabe in das einfache Prediction-Format des Projekts.
+
 
 class YoloDetector(BaseDetector):
     def __init__(self, weights_path: str | None = None, model: Any | None = None) -> None:
@@ -50,6 +53,8 @@ class YoloDetector(BaseDetector):
         for result in results:
             names = result.names
             for box in result.boxes:
+                # Jede YOLO-Box enthält Klassen-ID, Sicherheit und Koordinaten.
+                # Aus diesen Teilen bauen wir eine verständliche Prediction.
                 class_id = int(box.cls.item())
                 confidence = float(box.conf.item())
                 x1, y1, x2, y2 = [int(round(value)) for value in box.xyxy[0].tolist()]

@@ -7,6 +7,9 @@ from src.detector.base import BaseDetector, Prediction
 from src.detector.mock_detector import MockDetector
 from src.detector.yolo_detector import YoloDetector
 
+# Die Pipeline ist die kleine Vermittlerin zwischen App und Detector. Die App
+# fragt nur die Pipeline, und die Pipeline entscheidet, welcher Detector läuft.
+
 
 class InferencePipeline:
     def __init__(

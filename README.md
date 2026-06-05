@@ -1,27 +1,33 @@
 # KI-Web-App zur Erkennung von Kleidungsstücken
 
-Dieses Repository ist bewusst kompakt gehalten: eine Streamlit-App, eine OpenCV-Live-Demo und vier `src`-Dateien für YOLO-Inferenz, DeepFashion2-Konvertierung, Matchtests und Visualisierung.
+Dieses Repository ist bewusst kompakt gehalten: eine Streamlit-App, eine OpenCV-Live-Demo und mehrere `src`-Dateien für YOLO-Inferenz, DeepFashion2-Konvertierung, Matchtests und Visualisierung.
 
 ## Features
 
 - Streamlit-Weboberfläche für Einzelbildtests
 - Live-Webcam- oder Video-Demo im OpenCV-Fenster
 - YOLO- oder Mock-Inferenz über dieselbe Pipeline
-- DeepFashion2 -> YOLO Label-Konvertierung ohne Bildkopien
+- DeepFashion2-zu-YOLO-Label-Konvertierung ohne Bildkopien
 - Einzel- und Batch-Matchtests mit Report-Bild und HTML-Übersicht
 
 ## Projektstruktur
 
 ```text
-app/streamlit_app.py     Streamlit UI
-app/webcam_demo.py       Live-Demo für Webcam oder Videodatei
-src/core.py              Settings, Detektoren und Inferenz-Pipeline
-src/draw.py              Bounding-Boxes und Report-Visualisierung
-src/deepfashion2_yolo.py DeepFashion2 -> YOLO Labels
-src/matchtest.py         Matchtest- und Batch-Report-Logik
-main.py                  CLI für Konvertierung und Matchtests
-requirements.txt         Python-Abhängigkeiten
+app/streamlit_app.py              Streamlit-UI für Bildtests und Matchtests
+app/webcam_demo.py                Live-Demo für Webcam oder Videodatei
+src/config/settings.py            zentrale Einstellungen und Projektpfade
+src/detector/base.py              gemeinsames Vorhersageformat
+src/detector/mock_detector.py     einfacher Demo-Detector ohne KI-Modell
+src/detector/yolo_detector.py     YOLO-Detector mit Ultralytics
+src/inference/pipeline.py         verbindet Settings und Detector
+src/testing/matchtest.py          Matchtest- und Batch-Report-Logik
+src/training/deepfashion2_yolo.py DeepFashion2-zu-YOLO-Labels
+src/visualization/draw.py         Bounding-Boxes und Report-Visualisierung
+main.py                           optionale CLI für Konvertierung und Matchtests
+requirements.txt                  Python-Abhängigkeiten
 ```
+
+> **Wichtig:** `main.py` muss nicht zwingend ausgeführt werden. Für die normale Nutzung reicht es, der Anleitung im README zu folgen, also Abhängigkeiten installieren und dann die Streamlit-App oder die Webcam-Demo starten. `main.py` ist nur für Zusatzaufgaben wie DeepFashion2-Konvertierung oder Matchtests gedacht.
 
 ## Installation
 
@@ -57,17 +63,8 @@ Hinweise:
 - `q` oder `Esc` beendet das Fenster.
 - Falls die Standard-Webcam nicht gefunden wird, teste `--source 1` oder `--source 2`.
 
-## DeepFashion2 -> YOLO konvertieren
-
-Schneller Testlauf:
-
-```bash
-python main.py convert-deepfashion2-to-yolo --dataset-root "R:\Schulprojekt KI\DeepFashion2" --output-root data/deepfashion2_yolo_labels --limit-per-split 200
+## DeepFashion2 zu YOLO konvertieren
 ```
-
-Voller Lauf:
-
-```bash
 python main.py convert-deepfashion2-to-yolo --dataset-root "R:\Schulprojekt KI\DeepFashion2" --output-root data/deepfashion2_yolo_labels
 ```
 

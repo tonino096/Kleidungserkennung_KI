@@ -20,6 +20,9 @@ from src.inference.pipeline import InferencePipeline
 from src.testing.matchtest import DeepFashion2MatchTester
 from src.visualization.draw import draw_predictions
 
+# Diese Datei baut die Weboberfläche. Streamlit führt das Skript von oben nach
+# unten aus und zeichnet aus den st-Aufrufen die Seite im Browser.
+
 # Diese Breite sorgt dafür, dass Einzelbild- und Matchtest-Ergebnisse in der
 # Oberfläche konsistent groß angezeigt werden.
 _STREAMLIT_IMAGE_WIDTH = 1280
@@ -137,9 +140,9 @@ def ensure_test_split_ready_matchtester(
     weights_path: str,
     output_root: str,
 ) -> DeepFashion2MatchTester:
-    # Falls im laufenden Streamlit-Prozess doch noch ein aelteres Tester-Objekt
+    # Falls im laufenden Streamlit-Prozess doch noch ein älteres Tester-Objekt
     # ohne den neuen Testsplit-Pfad vorhanden ist, wird hier sofort eine frische
-    # Instanz aufgebaut. Wenn noetig, wird sogar das Modul neu geladen.
+    # Instanz aufgebaut. Wenn nötig, wird sogar das Modul neu geladen.
     if hasattr(tester, "run_prediction_only") and hasattr(tester, "run_prediction_only_batch"):
         return tester
 
@@ -304,6 +307,8 @@ def render_matchtest_page(settings: Settings) -> None:
 
     try:
         with st.spinner("Matchtest läuft..."):
+            # Der Test-Split hat keine Ground Truth. Deshalb gibt es dort nur
+            # Vorhersagebilder, aber keine Recall-/Precision-Bewertung.
             if split == "test" and mode == "single":
                 result = tester.run_prediction_only(
                     split=split,
@@ -433,7 +438,7 @@ def render_batch_match_result(result: dict[str, object]) -> None:
 
 
 def render_single_prediction_result(result: dict[str, object]) -> None:
-    # Fuer den Test-Split ohne Ground Truth werden nur Vorhersagen und das
+    # Für den Test-Split ohne Ground Truth werden nur Vorhersagen und das
     # gerenderte Ergebnisbild gezeigt.
     st.success("Testsplit-Vorhersage abgeschlossen.")
 
@@ -462,7 +467,7 @@ def render_single_prediction_result(result: dict[str, object]) -> None:
 
 
 def render_batch_prediction_result(result: dict[str, object]) -> None:
-    # Auch im Batchmodus fuer den Test-Split werden nur Bildanzahl und
+    # Auch im Batchmodus für den Test-Split werden nur Bildanzahl und
     # Vorhersagemengen gezeigt, nicht jedoch Matchmetriken.
     st.success("Testsplit-Batchvorhersage abgeschlossen.")
 
@@ -561,7 +566,7 @@ def _is_split_root_for_ui(path: Path) -> bool:
 
 
 def _is_image_only_split_root_for_ui(path: Path) -> bool:
-    # Fuer den reinen Vorhersagemodus reicht beim Test-Split bereits ein Bildordner.
+    # Für den reinen Vorhersagemodus reicht beim Test-Split bereits ein Bildordner.
     return (path / "image").exists()
 
 

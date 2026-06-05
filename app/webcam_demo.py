@@ -18,6 +18,9 @@ from src.config.settings import Settings
 from src.inference.pipeline import InferencePipeline
 from src.visualization.draw import draw_predictions
 
+# Diese Datei ist die Live-Version der Demo. Statt ein Bild hochzuladen, liest
+# sie ständig neue Frames aus Webcam oder Video und zeigt sofort die Boxen an.
+
 
 def parse_args() -> argparse.Namespace:
     # Alle wichtigen Live-Demo-Einstellungen werden über Argumente steuerbar,
@@ -100,6 +103,8 @@ def main() -> None:
         while True:
             success, frame_bgr = capture.read()
             if not success:
+                # Bei Videos ist das normalerweise einfach das Dateiende; bei
+                # Webcams bedeutet es meistens, dass die Kamera nicht mehr liefert.
                 break
 
             # Das Projekt zeichnet auf PIL-Bildern, OpenCV liefert aber BGR-Frames.

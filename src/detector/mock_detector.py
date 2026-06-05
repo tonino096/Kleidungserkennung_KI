@@ -4,6 +4,9 @@ from PIL.Image import Image
 
 from src.detector.base import BaseDetector, Prediction
 
+# Der MockDetector ist die einfache Testversion. Er erkennt nichts wirklich,
+# sondern liefert nur eine feste Beispielbox zum Ausprobieren der Oberfläche.
+
 
 class MockDetector(BaseDetector):
     def predict(self, image: Image) -> list[Prediction]:

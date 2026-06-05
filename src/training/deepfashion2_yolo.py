@@ -4,6 +4,9 @@ import json
 from pathlib import Path
 from typing import Iterable
 
+# Diese Datei übersetzt den DeepFashion2-Datensatz in das Format, das YOLO
+# beim Training erwartet. Die Bilder bleiben dabei an ihrem ursprünglichen Ort.
+
 # DeepFashion2 nutzt numerische Kategorien. Für das Projekt wird einmalig
 # festgelegt, welcher Zahlenwert welchem Kleidungsnamen entspricht.
 DEEPFASHION2_CATEGORIES: dict[int, str] = {
@@ -125,6 +128,8 @@ class DeepFashion2ToYoloConverter:
 
             class_id = category_id - 1
             x1, y1, x2, y2 = [float(number) for number in bbox]
+            # DeepFashion2 speichert Boxen als zwei Ecken. YOLO will dagegen
+            # Mittelpunkt, Breite und Höhe, jeweils relativ zur Bildgröße.
             x_center = ((x1 + x2) / 2.0) / width
             y_center = ((y1 + y2) / 2.0) / height
             box_width = (x2 - x1) / width
@@ -194,6 +199,8 @@ class DeepFashion2ToYoloConverter:
 
     @staticmethod
     def _is_valid_bbox(bbox: object) -> bool:
+        # Eine Box ist nur brauchbar, wenn sie vier Zahlen enthält und die
+        # rechte untere Ecke wirklich rechts/unten von der linken oberen liegt.
         if not isinstance(bbox, list) or len(bbox) != 4:
             return False
         x1, y1, x2, y2 = bbox

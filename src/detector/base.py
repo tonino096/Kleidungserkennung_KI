@@ -5,6 +5,9 @@ from typing import TypedDict
 
 from PIL.Image import Image
 
+# Die Detector-Dateien benutzen alle dieselbe kleine Schnittstelle. Dadurch
+# kann man später zwischen Mock und YOLO wechseln, ohne die App umzubauen.
+
 
 class Prediction(TypedDict):
     # Dieses gemeinsame Vorhersageformat sorgt dafür, dass Mock-, YOLO-,

@@ -10,6 +10,9 @@ from PIL.Image import Image
 
 from src.detector.base import Prediction
 
+# Hier entsteht alles, was man später als Bild sieht: Bounding Boxes,
+# Textlabels und der zusammengebaute Batch-Report.
+
 # Feste Farben pro Kategorie machen die Ausgaben leichter lesbar, weil
 # dieselbe Kleidungsart in App, Matchtest und Report immer gleich aussieht.
 _CATEGORY_COLORS: dict[str, tuple[int, int, int]] = {
@@ -40,7 +43,7 @@ _FALLBACK_PALETTE: list[tuple[int, int, int]] = [
 # Alle Vorhersagebilder werden auf dieselbe Anzeige-Leinwand gebracht,
 # damit Boxen und Texte zwischen verschiedenen Bildgrößen vergleichbar bleiben.
 _ANNOTATION_CANVAS_SIZE = (1280, 960)
-_ANNOTATION_FONT_SIZE = 18
+_ANNOTATION_FONT_SIZE = 30
 
 
 def get_category_color(label: str) -> tuple[int, int, int]:
@@ -160,7 +163,7 @@ def draw_predictions(image: Image, predictions: list[Prediction]) -> Image:
             label_prefix="",
             color_offset=0,
             line_width=6,
-            text_offset=-22,
+            text_offset=-35,
             font=font,
         )
 

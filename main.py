@@ -14,11 +14,14 @@ from src.config.settings import Settings
 from src.testing.matchtest import DeepFashion2MatchTester
 from src.training.deepfashion2_yolo import DeepFashion2ToYoloConverter
 
+# Diese Datei ist eher der Werkzeugkasten des Projekts: Man startet sie nur,
+# wenn man Daten konvertieren oder Matchtests über die Konsole ausführen will.
+
 
 def build_parser() -> argparse.ArgumentParser:
     # Alle Projektwerkzeuge hängen unter einem gemeinsamen CLI-Einstieg.
-    # So kann die Gruppe Konvertierung, Einzeltest und Batch-Test mit
-    # demselben Startpunkt bedienen.
+    # Dadurch merkt man sich nur "python main.py" und hängt danach den
+    # gewünschten Unterbefehl an.
     parser = argparse.ArgumentParser(description="Project utilities")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -92,6 +95,8 @@ def main() -> None:
         return
 
     if args.command == "matchtest-deepfashion2":
+        # Wenn ein Modellname angegeben wurde, kommt der passende Pfad aus den
+        # Settings. Sonst wird der direkt übergebene weights-path verwendet.
         selected_weights_path = settings.get_yolo_weights_path(args.model_name) if getattr(args, "model_name", None) else args.weights_path
         tester = DeepFashion2MatchTester(
             dataset_root=args.dataset_root,
@@ -110,6 +115,8 @@ def main() -> None:
         return
 
     if args.command == "batch-matchtest-deepfashion2":
+        # Der Batch-Matchtest nutzt dieselbe Modellauswahl wie der Einzeltest,
+        # verarbeitet aber mehrere Annotationen nacheinander.
         selected_weights_path = settings.get_yolo_weights_path(args.model_name) if getattr(args, "model_name", None) else args.weights_path
         tester = DeepFashion2MatchTester(
             dataset_root=args.dataset_root,
