@@ -1,13 +1,12 @@
 # KI-Web-App zur Erkennung von Kleidungsstücken
 
-Dieses Repository ist bewusst kompakt gehalten: eine Streamlit-App, eine OpenCV-Live-Demo und mehrere `src`-Dateien für YOLO-Inferenz, DeepFashion2-Konvertierung, Matchtests und Visualisierung.
+Wir haben eine KI trainiert, die eine Streamlit-App und eine OpenCV-Live-Demo als Ausgabe hat. Sie erkennt die Kleidungsstücke in Bildern, Videos und Webcam-Aufnahmen mit YOLO, wertet sie aus und visualisiert die Ergebnisse verständlich. 
 
 ## Features
 
 - Streamlit-Weboberfläche für Einzelbildtests
 - Live-Webcam- oder Video-Demo im OpenCV-Fenster
-- YOLO- oder Mock-Inferenz über dieselbe Pipeline
-- DeepFashion2-zu-YOLO-Label-Konvertierung ohne Bildkopien
+- DeepFashion2 zu YOLO-Label Konvertierung ohne Bildkopien
 - Einzel- und Batch-Matchtests mit Report-Bild und HTML-Übersicht
 
 ## Projektstruktur
@@ -26,8 +25,8 @@ src/visualization/draw.py         Bounding-Boxes und Report-Visualisierung
 main.py                           optionale CLI für Konvertierung und Matchtests
 requirements.txt                  Python-Abhängigkeiten
 ```
-
-> **Wichtig:** `main.py` muss nicht zwingend ausgeführt werden. Für die normale Nutzung reicht es, der Anleitung im README zu folgen, also Abhängigkeiten installieren und dann die Streamlit-App oder die Webcam-Demo starten. `main.py` ist nur für Zusatzaufgaben wie DeepFashion2-Konvertierung oder Matchtests gedacht.
+> [!IMPORTANT]
+> `main.py` muss nicht zwingend ausgeführt werden. Für die normale Nutzung reicht es, der Anleitung im README zu folgen, also Abhängigkeiten installieren und dann die Streamlit-App oder die Webcam-Demo starten. `main.py` ist nur für Zusatzaufgaben wie bspw. DeepFashion2-Konvertierung gedacht.
 
 ## Installation
 
@@ -58,10 +57,10 @@ python app/webcam_demo.py --weights "R:/Schulprojekt KI/Kleidungserkennung_KI/mo
 python app/webcam_demo.py --source "video.mp4"
 ```
 
-Hinweise:
+> [!NOTE]
+> - `q` oder `Esc` beendet das Fenster.
+> - Falls die Standard-Webcam nicht gefunden wird, teste `--source 1` oder `--source 2`.
 
-- `q` oder `Esc` beendet das Fenster.
-- Falls die Standard-Webcam nicht gefunden wird, teste `--source 1` oder `--source 2`.
 
 ## DeepFashion2 zu YOLO konvertieren
 ```
