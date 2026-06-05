@@ -19,7 +19,7 @@ from src.visualization.draw import draw_batch_report, draw_match_comparison, get
 @dataclass
 class MatchRecord:
     # Ein MatchRecord beschreibt das Ergebnis genau einer Ground-Truth-Box:
-    # ob sie gefunden wurde, mit welchem Label und welcher IoU.
+    # ob sie gefunden wurde, mit welchem Label und welcher IoU(Schnittmenge).
     ground_truth_label: str
     predicted_label: str | None
     iou: float
