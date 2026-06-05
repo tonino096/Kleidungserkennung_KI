@@ -7,7 +7,7 @@ from src.detector.base import BaseDetector, Prediction
 from src.detector.mock_detector import MockDetector
 from src.detector.yolo_detector import YoloDetector
 
-# Die Pipeline ist die kleine Vermittlerin zwischen App und Detector. Die App
+# Die Pipeline ist der Vermittler zwischen App und Detector. Die App
 # fragt nur die Pipeline, und die Pipeline entscheidet, welcher Detector läuft.
 
 
@@ -34,5 +34,5 @@ class InferencePipeline:
 
     def predict(self, image: Image) -> list[Prediction]:
         # Der eigentliche Inferenzaufruf wird komplett an den ausgewählten
-        # Detector delegiert, damit die Pipeline schlank bleibt.
+        # Detector geschickt, damit die Pipeline schlank bleibt.
         return self.detector.predict(image)
