@@ -100,8 +100,7 @@ def get_pipeline(
 
 
 def predict_and_render_with_ultralytics(detector: object, image: Image.Image) -> tuple[list[dict[str, object]], Image.Image]:
-    # Für den YOLO-Einzelbildtest wird direkt die Ultralytics-Zeichenroutine
-    # genutzt, damit die Darstellung möglichst nah an "yolo predict" liegt.
+    # Für den YOLO-Einzelbildtest wird direkt die Ultralytics-Zeichenroutine genutzt
     if hasattr(detector, "predict_and_render"):
         predictions, result_image = detector.predict_and_render(image)
         return predictions, result_image
@@ -126,7 +125,7 @@ def predict_and_render_with_ultralytics(detector: object, image: Image.Image) ->
 
 def get_matchtester(dataset_root: str, weights_path: str, output_root: str) -> DeepFashion2MatchTester:
     # Der Matchtester wird gecacht, weil Modell- und Datensatzinitialisierung
-    # vergleichsweise teuer sein können.
+    # vergleichsweise aufwendig sein kann.
     return DeepFashion2MatchTester(
         dataset_root=str(resolve_project_path(dataset_root)),
         weights_path=str(resolve_project_path(weights_path)),
@@ -157,7 +156,7 @@ def ensure_test_split_ready_matchtester(
 
 def main() -> None:
     # Die Oberfläche trennt normalen Bildtest und Matchtest in zwei Tabs,
-    # damit beide Workflows unabhängig bedienbar bleiben.
+    # damit beide unabhängig bleiben.
     st.set_page_config(page_title="Kleidungs-Erkennung", layout="wide")
     st.title("Kleidungs-Erkennung (Schulprojekt)")
     st.caption("Demo-App für Einzelbildtest und Matchtests")
