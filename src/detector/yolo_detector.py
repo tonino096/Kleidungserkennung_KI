@@ -70,7 +70,7 @@ class YoloDetector(BaseDetector):
 
     @staticmethod
     def _render_results(results: list[Any]) -> Image:
-        # result.plot() erzeugt ein OpenCV-/NumPy-Bild im BGR-Format.
+        # result.plot() erzeugt ein OpenCV-Bild im BGR-Format.
         # Für den Rest des Projekts wird es wieder in ein PIL-RGB-Bild gewandelt.
         if not results:
             raise ValueError("YOLO hat keine Ergebnisse zum Rendern geliefert.")
