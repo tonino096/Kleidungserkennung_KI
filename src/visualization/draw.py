@@ -112,7 +112,7 @@ def _scale_predictions(
 def _load_annotation_font() -> ImageFont.ImageFont | ImageFont.FreeTypeFont:
     # Es werden zwei gängige Fonts versucht; falls beide fehlen, wird auf
     # den PIL-Standardfont zurückgefallen.
-    for font_name in ("arial.ttf", "DejaVuSans.ttf"):
+    for font_name in ("arial.ttf", "SF-Pro.ttf"):
         try:
             return ImageFont.truetype(font_name, _ANNOTATION_FONT_SIZE)
         except OSError:
